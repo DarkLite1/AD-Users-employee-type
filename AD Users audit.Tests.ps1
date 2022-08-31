@@ -307,7 +307,7 @@ Describe 'when all tests pass' {
                 }
             }
         }
-    } -Tag test
+    }
     Context 'send a mail to the user when SendMail.When is Always' {
         BeforeAll {
             $testMail = @{
