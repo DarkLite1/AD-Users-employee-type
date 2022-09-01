@@ -214,7 +214,10 @@ End {
         $summaryTable = '<table>
             <tr><th>EmployeeType</th><th>Accounts</th></tr>'
         
-        $summaryTable += foreach ($type in $EmployeeType) {
+        $summaryTable += foreach (
+            $type in 
+            $EmployeeType | Sort-Object
+        ) {
             '<tr><td>{0}</td><td>{1}</td></tr>' -f $type,
             $(
                 ($users | Where-Object { $_.employeeType -eq $type } |

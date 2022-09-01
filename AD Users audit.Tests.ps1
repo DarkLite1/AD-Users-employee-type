@@ -315,7 +315,7 @@ Describe 'when all tests pass' {
                 To          = 'bob@contoso.com'
                 Bcc         = $ScriptAdmin
                 Subject     = '1 account'
-                Message     = "*Found a total of <b>1 account</b> for the following employee types in the active directory:*<table>*<tr><th>EmployeeType</th><th>Accounts</th></tr><tr><td>Plant</td><td>0</td></tr> <tr><td>Kiosk</td><td>0</td></tr> <tr><td>Employee</td><td>1</td></tr></table>*<p><i>* Check the attachments for details</i></p>*<h3>Organizational units:</h3><ul><li>CONTOSO.COM\EU</li></ul>"
+                Message     = "*Found a total of <b>1 account</b> for the following employee types in the active directory:*<table>*<tr><th>EmployeeType</th><th>Accounts</th></tr><tr><td>Employee</td><td>1</td></tr> <tr><td>Kiosk</td><td>0</td></tr> <tr><td>Plant</td><td>0</td></tr></table>*<p><i>* Check the attachments for details</i></p>*<h3>Organizational units:</h3><ul><li>CONTOSO.COM\EU</li></ul>"
                 Attachments = '* - Log.xlsx'
             }
         }
