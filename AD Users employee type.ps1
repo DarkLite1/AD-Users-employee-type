@@ -1,14 +1,14 @@
 #Requires -Version 5.1
-#Requires -Modules Toolbox.HTML, Toolbox.EventLog, ImportExcel
+#Requires -Modules ActiveDirectory, Toolbox.HTML, Toolbox.EventLog, ImportExcel
 
 <# 
     .SYNOPSIS   
-        Report about all the user accounts in a specific OU that have a specific EmployeeType.
+        Report of all user accounts of a specific EmployeeType.
 
     .DESCRIPTION
-        Report about all the users in AD that have the text 'TEMP' in the field 'EmployeeID'.
-        This Excel report will is sent by mail to the end user and saved in the log folder.
-        This script is specifically designed for GBR.
+        The script will search the organizational unit within AD for users 
+        matching the specified employee types. An email is send with am Excel
+        file in attachment containing th matching user accounts.
 
     .PARAMETER ImportFile
         A simple .JSON file that contains the parameters for the script.
