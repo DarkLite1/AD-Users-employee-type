@@ -84,7 +84,7 @@ Process {
         #endregion
 
         #region Get users
-        $users = foreach ($o in $OU) {
+        [Array]$users = foreach ($o in $OU) {
             $M = "Get user from OU '{0}'" -f $o
             Write-Verbose $M; Write-EventLog @EventVerboseParams -Message $M
 
@@ -180,25 +180,35 @@ Process {
 
 End {
     Try {
-        #region Export to Excel
-        $excelParams = @{
-            Path               = "$logFile - Log.xlsx"
-            AutoSize           = $true
-            FreezeTopRow       = $true
-            TableName          = 'Users'
-            WorkSheetName      = 'Users'
-            NoNumberConversion = @(
-                'Employee ID', 'OfficePhone', 'HomePhone', 
-                'MobilePhone', 'ipPhone', 'Fax', 'Pager'
-            )
+        $mailParams = @{
+            To        = $MailTo
+            Bcc       = $ScriptAdmin
+            Subject   = '{0} account{1}' -f
+            $users.Count,
+            $(if ($users.Count -ne 1) { 's' })
+            LogFolder = $LogParams.LogFolder
+            Header    = $ScriptName
+            Save      = "$LogFile - Mail.html"
         }
-        $users | Export-Excel @excelParams
+
+        #region Export to Excel
+        if ($users) {
+            $excelParams = @{
+                Path               = "$logFile - Log.xlsx"
+                AutoSize           = $true
+                FreezeTopRow       = $true
+                TableName          = 'Users'
+                WorkSheetName      = 'Users'
+                NoNumberConversion = @(
+                    'Employee ID', 'OfficePhone', 'HomePhone', 
+                    'MobilePhone', 'ipPhone', 'Fax', 'Pager'
+                )
+            }
+            $users | Export-Excel @excelParams
+
+            $mailParams.Attachments = $excelParams.Path
+        }
         #endregion
-
-        $Subject = '{0} account{1}' -f
-        ($users | Measure-Object).Count,
-        $(if (($users | Measure-Object).Count -ne 1) { 's' })
-
 
         #region Create HTML summary table
         $summaryTable = '<table>
@@ -214,27 +224,25 @@ End {
 
         $summaryTable += '</table>'
         #endregion
-
-        $Message = "Found <b>$Subject</b> for the following employee types in the active directory:
+        
+        #region Send e-mail
+        $mailParams.Message = "Found a total of <b>{0}</b> for the following employee types in the active directory:
         $summaryTable
-        <p><i>* Check the attachments for details</i></p>
-        {0}" -f
+        {1}
+        {2}" -f
+        $(
+            $mailParams.Subject
+        ),
+        $(
+            if ($mailParams.Attachments) {
+                '<p><i>* Check the attachments for details</i></p>'
+            }
+        ),
         $(
             $OU | ConvertTo-OuNameHC -OU | Sort-Object |
             ConvertTo-HtmlListHC -Header 'Organizational units:'
         )
         
-        #region Send e-mail
-        $MailParams = @{
-            To          = $MailTo
-            Bcc         = $ScriptAdmin
-            Subject     = $Subject
-            Message     = $Message
-            Attachments = $excelParams.Path 
-            LogFolder   = $LogParams.LogFolder
-            Header      = $ScriptName
-            Save        = "$LogFile - Mail.html"
-        }
         Get-ScriptRuntimeHC -Stop
         Send-MailHC @MailParams
         #endregion
