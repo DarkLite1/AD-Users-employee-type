@@ -195,28 +195,36 @@ End {
         $users | Export-Excel @excelParams
         #endregion
 
-        #region Send e-mail
-        $Subject = '{0} audit accounts' -f ($users | Measure-Object).Count
-    
-        $Table = $users.employeeType | Group-Object | Sort-Object Name |
-        Select-Object -Property @{
-            Name       = 'EmployeeType'
-            Expression = { $_.Name }
-        }, @{
-            Name       = 'Total'
-            Expression = { $_.Count }
-        } |
-        ConvertTo-Html -As 'Table' -Fragment
+        $Subject = '{0} account{1}' -f
+        ($users | Measure-Object).Count,
+        $(if (($users | Measure-Object).Count -ne 1) { 's' })
 
-        $Message = 'This report contains all user accounts of the type Consultant, Contractor, Temp or Vendor.
-        {0}
+
+        #region Create HTML summary table
+        $summaryTable = '<table>
+            <tr><th>EmployeeType</th><th>Accounts</th></tr>'
+        
+        $summaryTable += foreach ($type in $EmployeeType) {
+            '<tr><td>{0}</td><td>{1}</td></tr>' -f $type,
+            $(
+                ($users | Where-Object { $_.employeeType -eq $type } |
+                Measure-Object).Count
+            )
+        }
+
+        $summaryTable += '</table>'
+        #endregion
+
+        $Message = "Found <b>$Subject</b> for the following employee types in the active directory:
+        $summaryTable
         <p><i>* Check the attachments for details</i></p>
-        {1}' -f $Table, 
+        {0}" -f
         $(
             $OU | ConvertTo-OuNameHC -OU | Sort-Object |
             ConvertTo-HtmlListHC -Header 'Organizational units:'
         )
-
+        
+        #region Send e-mail
         $MailParams = @{
             To          = $MailTo
             Bcc         = $ScriptAdmin

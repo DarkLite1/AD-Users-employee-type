@@ -314,35 +314,9 @@ Describe 'when all tests pass' {
                 Header      = $testParams.ScriptName
                 To          = 'bob@contoso.com'
                 Bcc         = $ScriptAdmin
-                Priority    = 'High'
-                Subject     = '6 files found, 3 errors'
-                Message     = "*<p>Detected <b>3 errors</b> during execution.</p>*<p>Found a total of <b>6 files</b>:</p>*
-                *<th><a href=`"\\PC1\c$\folder\a`">\\PC1\c$\folder\a</a></th>*
-                *<td>Filter</td>*<td>Files found</td>*
-                *<td>*.pst</td>*<td>2</td>*
-                *<td>*.txt</td>*<td>1</td>*
-                *<th><a href=`"\\PC1\c$\folder\b`">\\PC1\c$\folder\b</a></th>*
-                *<td>Filter</td>*<td>Files found</td>*
-                *<td>*.pst</td>*<td>1</td>*
-                *<td>*.txt</td>*<td>0</td>*
-                *<th><a href=`"\\PC2\c$\folder\a`">\\PC2\c$\folder\a</a></th>*
-                *<td>Filter</td>*<td>Files found</td>*
-                *<td>*.pst</td>*<td>0</td>*
-                *<td>*.txt</td>*<td>1</td>*
-                *<th><a href=`"\\PC2\c$\folder\b`">\\PC2\c$\folder\b</a></th>*
-                *<td>Filter</td>*<td>Files found</td>*
-                *<td>*.pst</td>*<td>0</td>*
-                *<td>*.txt</td>*<td>1</td>*
-                *<th><a href=`"\\PC3\c$\folder\a`">\\PC3\c$\folder\a</a></th>*
-                *<td>Filter</td>*<td>Files found</td>*
-                *<td>*.pst</td>*<td>0</td>*
-                *<td>*.txt</td>*<td>0</td>*
-                *<th><a href=`"\\PC3\c$\folder\b`">\\PC3\c$\folder\b</a></th>*
-                *<td>Filter</td>*<td>Files found</td>*
-                *<td>*.pst</td>*<td>0</td>*
-                *<td>*.txt</td>*<td>0</td>*
-                *Check the attachment for details*"
-                Attachments = '* - 0 - Log.xlsx'
+                Subject     = '1 account'
+                Message     = "*Found <b>1 account</b> for the following employee types in the active directory:*<table>*<tr><th>EmployeeType</th><th>Accounts</th></tr><tr><td>Plant</td><td>0</td></tr> <tr><td>Kiosk</td><td>0</td></tr> <tr><td>Employee</td><td>1</td></tr></table>*<p><i>* Check the attachments for details</i></p>*<h3>Organizational units:</h3><ul><li>CONTOSO.COM\EU</li></ul>"
+                Attachments = '* - Log.xlsx'
             }
         }
         It 'Send-MailHC has the correct arguments' {
@@ -358,11 +332,10 @@ Describe 'when all tests pass' {
                 ($Header -eq $testMail.Header) -and
                 ($To -eq $testMail.To) -and
                 ($Bcc -eq $testMail.Bcc) -and
-                ($Priority -eq $testMail.Priority) -and
                 ($Subject -eq $testMail.Subject) -and
                 ($Attachments -like $testMail.Attachments) -and
                 ($Message -like $testMail.Message)
             }
         }
-    } -Skip
+    } 
 }
