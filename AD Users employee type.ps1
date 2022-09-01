@@ -10,6 +10,19 @@
         This Excel report will is sent by mail to the end user and saved in the log folder.
         This script is specifically designed for GBR.
 
+    .PARAMETER ImportFile
+        A simple .JSON file that contains the parameters for the script.
+        See Example.json
+    
+    .PARAMETER OU
+        List of organizational units where to search for AD user accounts.
+
+    .PARAMETER MailTo
+        List of e-mail addresses that wil receive the report.
+
+    .PARAMETER EmployeeType
+        List of employee types to search for.
+
     .PARAMETER LogFolder
         Location for the log files.
 #>
